@@ -3,6 +3,7 @@ import { difference } from "lodash";
 
 import WeatherWidget from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
+import apiUsageService from "./api-usage.service";
 
 //todo: @vm: get all cities from service
 const fullCityList = [
@@ -27,7 +28,11 @@ export class App extends React.Component {
     super(props);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    apiUsageService.onChange(({ rateLimit, rateLimitRemaining }) =>
+      this.setState({ rateLimit, rateLimitRemaining })
+    );
+  }
 
   handleCityChange(newCity) {
     if (this.state.cities.indexOf(newCity) >= 0) {
@@ -43,7 +48,7 @@ export class App extends React.Component {
   }
 
   render() {
-    let { cities } = this.state;
+    let { cities, rateLimit, rateLimitRemaining } = this.state;
 
     let cityList = difference(fullCityList, cities);
 
@@ -57,6 +62,10 @@ export class App extends React.Component {
 
     return (
       <div className="screen">
+        <h1 className="app-title">WeatherApp</h1>
+        <div>
+          {rateLimitRemaining}/{rateLimit}
+        </div>
         <div className="city-selector">
           <CitySearch onSearch={event => this.handleCityChange(event)} />
         </div>

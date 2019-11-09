@@ -1,6 +1,7 @@
 //todo: @vm: rename it to weather.service.js, or weather.endpoint.js
 
 import { apiKey } from "../../../config.json";
+import apiUsageService from "../api-usage.service.js";
 
 //https://emojipedia.org/nature/
 const weatherIcons = {
@@ -61,6 +62,7 @@ export default function getWeather(locationData) {
   const apiEndpoint = `${apiDomain}/${locationData.Key}?apikey=${apiKey}&details=true`;
 
   return fetch(apiEndpoint)
+    .then(apiUsageService.updateApiUsage)
     .then(data => data.json())
     .then(data => weatherMapper(locationData)(data))
     .catch(err => {

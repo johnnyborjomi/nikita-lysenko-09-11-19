@@ -1,4 +1,5 @@
 import { apiKey } from "../../../config.json";
+import apiUsageService from "../api-usage.service.js";
 
 function cityMapper(data) {
   if (!data) return [];
@@ -18,6 +19,7 @@ export default async function getCities(query) {
 
   return (
     fetch(apiUrl)
+      .then(apiUsageService.updateApiUsage)
       .then(res => res.json())
       // .then(data => (console.log(data), data))
       .then(cityMapper)
