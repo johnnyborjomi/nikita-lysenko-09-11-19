@@ -1,23 +1,26 @@
-// const apiUrl = 'http://dataservice.accuweather.com/locations/v1/cities/autocomplete';
-// const apiKey = 'YvWUlJ9J8Si4e90YIPKEReJfn95BFTIK';
+function getCitiesExternal(query) {
+  const apiUrl =
+    "http://dataservice.accuweather.com/locations/v1/cities/autocomplete";
+  const apiKey = "YvWUlJ9J8Si4e90YIPKEReJfn95BFTIK";
 
-// export function getCities(query) {
-//     return fetch(`${apiUrl}?apikey=${apiKey}&q=${query}`)
-//         .then(res => res.json())
-//         // .then(data => (console.log(data), data))
-//         .then(cityMapper)
-//         .catch(err => {
-//             console.log(err);
-//         });;
-// }
+  return (
+    fetch(`${apiUrl}?apikey=${apiKey}&q=${query}`)
+      .then(res => res.json())
+      // .then(data => (console.log(data), data))
+      .then(cityMapper)
+      .catch(err => {
+        console.log(err);
+      })
+  );
+}
 
 import { cities } from "../../assets/united-states.city-list.js";
 import WeatherService from "../weather-widget/weather.service.js";
 
-function cityMapper(data) {
-  if (!data.list) return [];
+function cityMapper(data, propName = "LocalizedName") {
+  if (!data) return [];
 
-  const cityList = data.list.map(city => city.name);
+  const cityList = data.map(city => city[propName]);
 
   return [...new Set(cityList)].slice(0, 10);
 }
@@ -44,8 +47,7 @@ const weatherService = new WeatherService();
 export async function getCities(query) {
   if (query.length < 1) return Promise.resolve([]);
 
-  //todo: impl autocomplete using external api
-  //return getCityListLike(query);
+  return getCitiesExternal(query);
 
   const latLng = getLatLng(query);
   const zip = getZip(query);
