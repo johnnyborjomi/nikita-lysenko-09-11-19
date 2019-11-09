@@ -2,13 +2,12 @@ import * as React from "react";
 import classnames from "classnames";
 
 import { debounce } from "lodash";
-import { getCities } from "./city-search.service.js";
+import getCities from "./city-search.service.js";
 import LoaderLinear from "../loader-linear/loader-linear.jsx";
 
 import "./city-search.scss";
-import WeatherService from "../weather-widget/weather.service.js";
 
-const defaultCities = ["New York", "Tokyo", "Toronto", "Kharkiv"];
+const defaultCities = []; // ["New York", "Tokyo", "Toronto", "Kharkiv"];
 
 //todo: @vm: impl with autocomplete
 export default class CitySearch extends React.Component {
@@ -20,8 +19,6 @@ export default class CitySearch extends React.Component {
   };
 
   debouncedDataHandler = debounce(this.dataHandler, 500);
-
-  weatherService = new WeatherService();
 
   dataHandler(value) {
     let query = value;
@@ -55,8 +52,8 @@ export default class CitySearch extends React.Component {
 
   renderSuggestions(suggest) {
     return suggest.map(city => (
-      <li key={city} onClick={() => this.props.onSearch(city)}>
-        {city}
+      <li key={city.LocalizedName} onClick={() => this.props.onSearch(city)}>
+        {city.LocalizedName}
       </li>
     ));
   }
