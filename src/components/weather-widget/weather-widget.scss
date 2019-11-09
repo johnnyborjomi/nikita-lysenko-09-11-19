@@ -1,0 +1,79 @@
+.weather-widget {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  margin: 10px;
+
+  padding: 10px;
+
+  width: 240px;
+  box-sizing: border-box;
+
+  background-color: white;
+  border-radius: 4px;
+
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+  transition: background-color 300ms ease-in-out;
+
+  .button-delete {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  &:hover {
+    .button-delete {
+      visibility: visible;
+    }
+  }
+
+  .city {
+    font-size: 1.5em;
+  }
+
+  .desc {
+    text-transform: capitalize;
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
+  .main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    visibility: visible;
+    transition: all 300ms ease-in-out;
+  }
+
+  &.is-loading {
+    .main {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateX(10px);
+    }
+  }
+
+  .temp {
+    display: flex;
+    flex-direction: row;
+    .temp-value {
+      font-size: 5em;
+      line-height: 1em;
+    }
+    .temp-units {
+      font-size: 2em;
+    }
+  }
+  .icon {
+    font-size: 3.5em;
+    line-height: 1.5em;
+    align-self: center;
+  }
+}
