@@ -59,7 +59,7 @@ export default class CitySearch extends React.Component {
   }
 
   render() {
-    const { suggestList, inputValue, isLoading, showSuggest } = this.state;
+    const { suggestList = [], inputValue, isLoading, showSuggest } = this.state;
 
     const isNothingFound =
       suggestList.length === 0 && inputValue.length > 0 && !isLoading;
@@ -70,7 +70,7 @@ export default class CitySearch extends React.Component {
       <div className="city-search">
         <input
           type="text"
-          placeholder="enter city / lat,lng / ZIP"
+          placeholder="enter city name"
           className="city-search__input"
           onChange={event => this.onChange(event.target.value)}
           onFocus={event => {
