@@ -2,10 +2,7 @@ import * as React from "react";
 import { difference } from "lodash";
 
 import WeatherWidget from "./weather-widget/weather-widget";
-import WeatherService from "./weather-widget/weather.service";
 import CitySearch from "./city-search/city-search";
-
-const defaultCity = "New York";
 
 //todo: @vm: get all cities from service
 const fullCityList = [
@@ -24,20 +21,13 @@ const fullCityList = [
 ];
 
 export class App extends React.Component {
-  state = { cities: [defaultCity] };
+  state = { cities: [] }; //defaultcity here
 
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
-    //add current city to the list
-    new WeatherService()
-      .getCurrentCityName()
-      .then(cityName =>
-        this.setState(({ cities }) => ({ cities: [cityName, ...cities] }))
-      );
-  }
+  componentDidMount() {}
 
   handleCityChange(newCity) {
     if (this.state.cities.indexOf(newCity) >= 0) {
