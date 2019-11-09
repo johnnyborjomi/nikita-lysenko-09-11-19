@@ -5,6 +5,8 @@ import WeatherWidget from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
 import apiUsageService from "./api-usage.service";
 
+import "./app.scss";
+
 //todo: @vm: get all cities from service
 const fullCityList = [
   "Kharkiv",
@@ -48,7 +50,7 @@ export class App extends React.Component {
   }
 
   render() {
-    let { cities, rateLimit, rateLimitRemaining } = this.state;
+    let { cities, rateLimit = 0, rateLimitRemaining = 0 } = this.state;
 
     let cityList = difference(fullCityList, cities);
 
@@ -63,9 +65,6 @@ export class App extends React.Component {
     return (
       <div className="screen">
         <h1 className="app-title">WeatherApp</h1>
-        <div>
-          {rateLimitRemaining}/{rateLimit}
-        </div>
         <div className="city-selector">
           <CitySearch onSearch={event => this.handleCityChange(event)} />
         </div>
@@ -79,6 +78,9 @@ export class App extends React.Component {
               onDeleteWidget={city => this.deleteCity(city)}
             />
           ))}
+        </div>
+        <div className="api-request-info">
+          API Requests: {rateLimitRemaining}/{rateLimit}
         </div>
       </div>
     );
