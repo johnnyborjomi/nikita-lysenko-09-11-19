@@ -1,11 +1,9 @@
 import * as React from "react";
 import classnames from "classnames";
 
-import WeatherService from "./weather.service";
+import getWeather from "./weather.service";
 
 import "./weather-widget.scss";
-
-const weatherService = new WeatherService();
 
 //todo: @vm: impl weather widget
 export default class WeatherWidget extends React.Component {
@@ -24,7 +22,7 @@ export default class WeatherWidget extends React.Component {
   }
 
   async getWeather(city) {
-    let weatherData = await weatherService.getWeatherByCity(city);
+    let weatherData = await getWeather(city);
     if (weatherData) {
       this.setState({ weatherData });
     }
@@ -35,6 +33,7 @@ export default class WeatherWidget extends React.Component {
     let { weatherData } = this.state;
 
     let {
+      cityName,
       description = "...",
       temp = 0,
       humidity,
@@ -54,7 +53,7 @@ export default class WeatherWidget extends React.Component {
         className={classnames(["weather-widget", { "is-loading": isLoading }])}
         style={{ backgroundColor: tempBgc }}
       >
-        <div className="city">{city}</div>
+        <div className="city">{cityName}</div>
         <div className="desc">
           {new Date().toDateString()}, {description}
           <div>

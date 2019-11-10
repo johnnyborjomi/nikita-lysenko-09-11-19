@@ -1,104 +1,91 @@
 //todo: @vm: rename it to weather.service.js, or weather.endpoint.js
 
+import { apiKey } from "../../../config.json";
+import apiUsageService from "../api-usage.service.js";
+
 //https://emojipedia.org/nature/
-export const weatherIcons = {
+const weatherIcons = {
+  //todo(vm): update icon codes for accuweather
+  // https://developer.accuweather.com/weather-icons
   //day
-  ["01d"]: "☀️",
-  ["02d"]: "🌤️",
-  ["03d"]: "🌥️",
-  ["04d"]: "☁️",
-  ["09d"]: "🌧️",
-  ["10d"]: "🌦️",
-  ["11d"]: "⛈️",
-  ["13d"]: "🌨️",
-  ["50d"]: "🌫️",
+  [1]: "☀️", //  1	Sunny
+  [2]: "☀️", //  2	Mostly Sunny
+  [3]: "🌤", //  3	Partly Sunny
+  [4]: "🌤", //  4	Intermittent Clouds
+  [5]: "🌥️", //  5	Hazy Sunshine
+  [6]: "🌥️", //  6	Mostly Cloudy
+  [7]: "☁️", //  7	Cloudy
+  [8]: "☁️", //  8	Dreary
+  [11]: "🌫️", // 11	Fog
+  [12]: "🌧️", // 12	Showers
+  [13]: "🌦️", // 13	Mostly Cloudy w/ Showers
+  [14]: "🌦️", // 14	Partly Sunny w/ Showers
+  [15]: "⛈️", // 15	T-Storms
+  [16]: "⛈️", // 16	Mostly Cloudy w/ T-Storms
+  [17]: "⛈️", // 17	Partly Sunny w/ T-Storms
+  [18]: "🌨️", // 18	Rain
+  [19]: "☁️", // 19	Flurries
+  [20]: "🌥️", // 20	Mostly Cloudy w/ Flurries
+  [21]: "🌥️", // 21	Partly Sunny w/ Flurries
+  [22]: "🌨️", // 22	Snow
+  [23]: "🌨️", // 23	Mostly Cloudy w/ Snow
+  [24]: "❄️", // 24	Ice
+  [25]: "🌨️", // 25	Sleet
+  [26]: "🌨️", // 26	Freezing Rain
+  [29]: "🌨️", // 29	Rain and Snow
+  [30]: "🥵", // 30	Hot
+  [31]: "🥶", // 31	Cold
+  [32]: "🌬️", // 32	Windy
   //night
-  ["01n"]: "🌚",
-  ["02n"]: "🌤️",
-  ["03n"]: "🌥️",
-  ["04n"]: "☁️",
-  ["09n"]: "🌧️",
-  ["10n"]: "🌦️",
-  ["11n"]: "⛈️",
-  ["13n"]: "🌨️",
-  ["50n"]: "🌫️"
+  [33]: "🌚", //	Clear
+  [34]: "🌚", //	Mostly Clear
+  [35]: "🌚", //	Partly Cloudy
+  [36]: "🌚", //	Intermittent Clouds
+  [37]: "🌚", //	Hazy Moonlight
+  [38]: "🌚", //	Mostly Cloudy
+  [39]: "🌚", //	Partly Cloudy w/ Showers
+  [40]: "🌚", //	Mostly Cloudy w/ Showers
+  [41]: "🌚", //	Partly Cloudy w/ T-Storms
+  [42]: "🌚", //	Mostly Cloudy w/ T-Storms
+  [43]: "🌚", //	Mostly Cloudy w/ Flurries
+  [44]: "🌚" //	  Mostly Cloudy w/ Snow
 };
 
 //todo: @vm: get only needed data from api, and return only it
-function weatherMapper({ weather, main, name: cityName }) {
-  //get first weather obj from weather arr
-  let [w1] = weather;
+function weatherMapper(locationData) {
+  const { LocalizedName: cityName } = locationData;
 
-  let icon = weatherIcons[w1.icon] || "⛔️";
-  let { description } = w1;
-  let { temp, pressure, humidity } = main;
+  return function([data]) {
+    const {
+      WeatherIcon,
+      WeatherText,
+      Temperature,
+      Pressure,
+      RelativeHumidity
+    } = data;
 
-  return { cityName, weather, icon, description, temp, pressure, humidity };
-}
+    let icon = weatherIcons[WeatherIcon] || "⛔️";
 
-function getCurrentGeoPosition() {
-  return new Promise((resolve, reject) =>
-    navigator.geolocation.getCurrentPosition(resolve, reject)
-  ).then(({ coords }) => coords);
+    const temp = Temperature.Metric.Value;
+    const pressure = Pressure.Metric.Value;
+    const humidity = RelativeHumidity;
+    const description = WeatherText;
+
+    return { cityName, icon, description, temp, pressure, humidity };
+  };
 }
 
 //todo: @vm: no need to use class here, use just simple func instead
-export default class WeatherService {
-  constructor() {
-    const units = "metric";
-    const apiKey = "fc224f33111b95796a7a8bcfc97ddea5";
-    this.apiDomain = `https://api.openweathermap.org/data/2.5/`;
-    const basicParams = `?units=${units}&appid=${apiKey}`;
-    this.weatherEndpoint = `${this.apiDomain}weather${basicParams}`;
-  }
+export default function getWeather(locationData) {
+  const apiDomain = "http://dataservice.accuweather.com/currentconditions/v1";
 
-  getCurrentCityName() {
-    return getCurrentGeoPosition().then(this.getCityNameByLatLng);
-  }
+  const apiEndpoint = `${apiDomain}/${locationData.Key}?apikey=${apiKey}&details=true`;
 
-  getCityNameByLatLng = coords => {
-    return this.getWeatherByCoords(coords).then(({ cityName }) => cityName);
-  };
-
-  getCityNameByZip = zip => {
-    return this.getWeatherByZip(zip)
-      .then(({ cityName }) => cityName)
-      .catch(error => {
-        console.warn(error);
-        return null;
-      });
-  };
-
-  getWeatherByZip(zip) {
-    let zipQuery = `&zip=${zip},us`;
-    let apiUrl = this.weatherEndpoint + zipQuery;
-
-    return this.getWeather(apiUrl);
-  }
-
-  getWeatherByCoords({ latitude, longitude }) {
-    let coordsQuery = `&lat=${latitude}&lon=${longitude}`;
-    let apiUrl = this.weatherEndpoint + coordsQuery;
-
-    return this.getWeather(apiUrl);
-  }
-
-  getWeatherByCity(city) {
-    let cityQuery = `&q=${city}`;
-    let apiUrl = this.weatherEndpoint + cityQuery;
-
-    return this.getWeather(apiUrl);
-  }
-
-  getWeather(apiUrl) {
-    return (
-      fetch(apiUrl)
-        .then(data => data.json())
-        // .then(data => (console.log(data), data))
-        .then(weatherMapper)
-        .catch(err => {
-          console.log(err);
-        })
-    );
-  }
+  return fetch(apiEndpoint)
+    .then(apiUsageService.updateApiUsage)
+    .then(data => data.json())
+    .then(data => weatherMapper(locationData)(data))
+    .catch(err => {
+      console.log(err);
+    });
 }

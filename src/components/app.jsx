@@ -2,10 +2,10 @@ import * as React from "react";
 import { difference } from "lodash";
 
 import WeatherWidget from "./weather-widget/weather-widget";
-import WeatherService from "./weather-widget/weather.service";
 import CitySearch from "./city-search/city-search";
+import apiUsageService from "./api-usage.service";
 
-const defaultCity = "New York";
+import "./app.scss";
 
 //todo: @vm: get all cities from service
 const fullCityList = [
@@ -24,19 +24,16 @@ const fullCityList = [
 ];
 
 export class App extends React.Component {
-  state = { cities: [defaultCity] };
+  state = { cities: [] }; //defaultcity here
 
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    //add current city to the list
-    new WeatherService()
-      .getCurrentCityName()
-      .then(cityName =>
-        this.setState(({ cities }) => ({ cities: [cityName, ...cities] }))
-      );
+    apiUsageService.onChange(({ rateLimit, rateLimitRemaining }) =>
+      this.setState({ rateLimit, rateLimitRemaining })
+    );
   }
 
   handleCityChange(newCity) {
@@ -53,7 +50,7 @@ export class App extends React.Component {
   }
 
   render() {
-    let { cities } = this.state;
+    let { cities, rateLimit = 0, rateLimitRemaining = 0 } = this.state;
 
     let cityList = difference(fullCityList, cities);
 
@@ -67,6 +64,7 @@ export class App extends React.Component {
 
     return (
       <div className="screen">
+        <h1 className="app-title">WeatherApp</h1>
         <div className="city-selector">
           <CitySearch onSearch={event => this.handleCityChange(event)} />
         </div>
@@ -80,6 +78,9 @@ export class App extends React.Component {
               onDeleteWidget={city => this.deleteCity(city)}
             />
           ))}
+        </div>
+        <div className="api-request-info">
+          API Requests: {rateLimitRemaining}/{rateLimit}
         </div>
       </div>
     );

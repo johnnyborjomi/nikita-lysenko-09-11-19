@@ -35,7 +35,8 @@ const config = {
     new ExtractTextPlugin("styles.css"),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
-      title: "Weatherapp"
+      title: "Weatherapp",
+      favicon: "favicon.png"
     })
     // new CopyWebpackPlugin([{ from: "src/assets/", to: "assets" }])
   ]
