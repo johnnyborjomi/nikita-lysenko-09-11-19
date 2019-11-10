@@ -14,10 +14,9 @@ body {
   background: gainsboro;
 }
 
-.app {
+.screen {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   padding: 0 40px;
 }
 

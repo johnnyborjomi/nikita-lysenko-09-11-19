@@ -7,7 +7,7 @@ class ApiUsage {
 
     this.onChangeHandlers.forEach(cb => cb({ rateLimit, rateLimitRemaining }));
 
-    response;
+    return response;
   };
 
   onChange(callback) {

@@ -1,27 +1,13 @@
 import * as React from "react";
 import { difference } from "lodash";
 
+import Header from "./header/header";
 import WeatherWidget from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import apiUsageService from "./api-usage.service";
 
 import "./app.scss";
-
-//todo: @vm: get all cities from service
-const fullCityList = [
-  "Kharkiv",
-  "Lviv",
-  "Kiev",
-  "London",
-  "Tokyo",
-  "Moscow",
-  "Paris",
-  "Phuket",
-  "Berlin",
-  "Kiel",
-  "Sharm ash Shaykh",
-  "Rome"
-];
 
 export class App extends React.Component {
   state = { cities: [] }; //defaultcity here
@@ -30,11 +16,11 @@ export class App extends React.Component {
     super(props);
   }
 
-  componentDidMount() {
-    apiUsageService.onChange(({ rateLimit, rateLimitRemaining }) =>
-      this.setState({ rateLimit, rateLimitRemaining })
-    );
-  }
+  // componentDidMount() {
+  //   apiUsageService.onChange(({ rateLimit, rateLimitRemaining }) =>
+  //     this.setState({ rateLimit, rateLimitRemaining })
+  //   );
+  // }
 
   handleCityChange(newCity) {
     if (this.state.cities.indexOf(newCity) >= 0) {
@@ -50,9 +36,8 @@ export class App extends React.Component {
   }
 
   render() {
-    let { cities, rateLimit = 0, rateLimitRemaining = 0 } = this.state;
-
-    let cityList = difference(fullCityList, cities);
+    // let { cities, rateLimit = 0, rateLimitRemaining = 0 } = this.state;
+    let { cities } = this.state;
 
     //todo: @vm: render selector and weather widget as separate components
 
@@ -63,26 +48,38 @@ export class App extends React.Component {
     //todo: @vm: so do that shit.
 
     return (
-      <div className="screen">
-        <h1 className="app-title">WeatherApp</h1>
-        <div className="city-selector">
-          <CitySearch onSearch={event => this.handleCityChange(event)} />
-        </div>
+      <>
+        <Router>
+          <Header>
+            <Link to={"/"}>Home</Link>
+            <Link to={"/favorites"}>Favorites</Link>
+          </Header>
+          <Route exact path="/">
+            <div className="screen">
+              <div className="city-selector">
+                <CitySearch onSearch={event => this.handleCityChange(event)} />
+              </div>
 
-        <hr />
-        <div className="widgets">
-          {cities.map(city => (
-            <WeatherWidget
-              key={city}
-              city={city}
-              onDeleteWidget={city => this.deleteCity(city)}
-            />
-          ))}
-        </div>
-        <div className="api-request-info">
-          API Requests: {rateLimitRemaining}/{rateLimit}
-        </div>
-      </div>
+              <hr />
+              <div className="widgets">
+                {cities.map(city => (
+                  <WeatherWidget
+                    key={city}
+                    city={city}
+                    onDeleteWidget={city => this.deleteCity(city)}
+                  />
+                ))}
+              </div>
+            </div>
+          </Route>
+          <Route path="/favorites">
+            <div>favorites</div>
+          </Route>
+        </Router>
+        {/* <div className="api-request-info">
+                API Requests: {rateLimitRemaining}/{rateLimit}
+              </div> */}
+      </>
     );
   }
 }

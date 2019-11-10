@@ -52,7 +52,7 @@ export default class CitySearch extends React.Component {
 
   renderSuggestions(suggest) {
     return suggest.map(city => (
-      <li key={city.LocalizedName} onClick={() => this.props.onSearch(city)}>
+      <li key={city.Key} onClick={() => this.props.onSearch(city)}>
         {city.LocalizedName}
       </li>
     ));
