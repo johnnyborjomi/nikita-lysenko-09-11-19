@@ -68,8 +68,19 @@ export default class WeatherWidget extends React.Component {
           </div>
           <div className="icon">{icon}</div>
         </div>
-        <div className="button-delete" onClick={() => onDeleteWidget(city)}>
-          ✖️
+        <div className="actions">
+          <div
+            className="button button--favorites"
+            onClick={() => onAddToFavorites(city)}
+          >
+            ⭐️
+          </div>
+          <div
+            className="button button--delete"
+            onClick={() => onDeleteWidget(city)}
+          >
+            ✖️
+          </div>
         </div>
       </div>
     );
