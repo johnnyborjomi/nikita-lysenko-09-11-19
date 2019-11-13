@@ -1,12 +1,13 @@
 import * as React from "react";
 import classnames from "classnames";
+import {connect} from 'react-redux';
+import {changeFavoritesList} from '../../actions/action-creator';
 
 import getWeather from "./weather.service";
 
 import "./weather-widget.scss";
 
-//todo: @vm: impl weather widget
-export default class WeatherWidget extends React.Component {
+export class WeatherWidget extends React.Component {
   state = {
     weatherData: {}
   };
@@ -28,9 +29,15 @@ export default class WeatherWidget extends React.Component {
     }
   }
 
+  onAddToFavorites = (key) => {
+    this.props.dispatch(changeFavoritesList([key]));
+  }
+
   render() {
     let { city, onDeleteWidget } = this.props;
     let { weatherData } = this.state;
+
+    console.log(city);
 
     let {
       cityName,
@@ -71,7 +78,7 @@ export default class WeatherWidget extends React.Component {
         <div className="actions">
           <div
             className="button button--favorites"
-            onClick={() => onAddToFavorites(city)}
+            onClick={() => this.onAddToFavorites(city.Key)}
           >
             ⭐️
           </div>
@@ -86,3 +93,11 @@ export default class WeatherWidget extends React.Component {
     );
   }
 }
+
+function mapStateToProps (state) {
+  return {
+    favoritesList: state.favoritesList.favoritesList
+  }
+}
+
+export const ConnectedWeatherWidget = connect(mapStateToProps)(WeatherWidget);

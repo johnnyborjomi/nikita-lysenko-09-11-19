@@ -2,7 +2,8 @@ import * as React from "react";
 import { difference } from "lodash";
 
 import Header from "./header/header";
-import WeatherWidget from "./weather-widget/weather-widget";
+import {WeatherWidget} from "./weather-widget/weather-widget";
+import {ConnectedWeatherWidget} from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import apiUsageService from "./api-usage.service";
@@ -15,12 +16,6 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
   }
-
-  // componentDidMount() {
-  //   apiUsageService.onChange(({ rateLimit, rateLimitRemaining }) =>
-  //     this.setState({ rateLimit, rateLimitRemaining })
-  //   );
-  // }
 
   handleCityChange(newCity) {
     if (this.state.cities.indexOf(newCity) >= 0) {
@@ -63,7 +58,7 @@ export class App extends React.Component {
               <hr />
               <div className="widgets">
                 {cities.map(city => (
-                  <WeatherWidget
+                  <ConnectedWeatherWidget
                     key={city}
                     city={city}
                     onDeleteWidget={city => this.deleteCity(city)}
