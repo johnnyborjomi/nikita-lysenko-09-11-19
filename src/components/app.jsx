@@ -2,16 +2,16 @@ import * as React from "react";
 import { difference } from "lodash";
 
 import Header from "./header/header";
-import {WeatherWidget} from "./weather-widget/weather-widget";
-import {ConnectedWeatherWidget} from "./weather-widget/weather-widget";
+import { WeatherWidget } from "./weather-widget/weather-widget";
+import { ConnectedWeatherWidget } from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import apiUsageService from "./api-usage.service";
+import store from "../store";
 
-import "./app.scss";
+const defaultCity = { Key: "215854", LocalizedName: "Tel Aviv" };
 
 export class App extends React.Component {
-  state = { cities: [] }; //defaultcity here
+  state = { cities: [defaultCity] }; //defaultcity here
 
   constructor(props) {
     super(props);
@@ -33,6 +33,7 @@ export class App extends React.Component {
   render() {
     // let { cities, rateLimit = 0, rateLimitRemaining = 0 } = this.state;
     let { cities } = this.state;
+    console.log(this.props.store.getState());
 
     //todo: @vm: render selector and weather widget as separate components
 
@@ -58,8 +59,8 @@ export class App extends React.Component {
               <hr />
               <div className="widgets">
                 {cities.map(city => (
-                  <ConnectedWeatherWidget
-                    key={city}
+                  <WeatherWidget
+                    key={city.Key}
                     city={city}
                     onDeleteWidget={city => this.deleteCity(city)}
                   />
@@ -68,12 +69,14 @@ export class App extends React.Component {
             </div>
           </Route>
           <Route path="/favorites">
-            <div>favorites</div>
+            <>
+              <h1>favorites</h1>
+              {store.getState().favoritesList.favoritesList.map(city => {
+                <ConnectedWeatherWidget key={city.Key} city={city} />;
+              })}
+            </>
           </Route>
         </Router>
-        {/* <div className="api-request-info">
-                API Requests: {rateLimitRemaining}/{rateLimit}
-              </div> */}
       </>
     );
   }

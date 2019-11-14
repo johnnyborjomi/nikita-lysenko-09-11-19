@@ -2,6 +2,7 @@ import * as React from "react";
 import classnames from "classnames";
 import {connect} from 'react-redux';
 import {changeFavoritesList} from '../../actions/action-creator';
+import store from '../../store';
 
 import getWeather from "./weather.service";
 
@@ -29,8 +30,8 @@ export class WeatherWidget extends React.Component {
     }
   }
 
-  onAddToFavorites = (key) => {
-    this.props.dispatch(changeFavoritesList([key]));
+  onAddToFavorites = (city) => {
+    store.dispatch(changeFavoritesList(city));
   }
 
   render() {
@@ -78,7 +79,7 @@ export class WeatherWidget extends React.Component {
         <div className="actions">
           <div
             className="button button--favorites"
-            onClick={() => this.onAddToFavorites(city.Key)}
+            onClick={() => this.onAddToFavorites({key: city.Key, cityName: cityName})}
           >
             ⭐️
           </div>
