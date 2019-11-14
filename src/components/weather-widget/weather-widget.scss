@@ -19,11 +19,8 @@
   transition: background-color 300ms ease-in-out;
 
   .actions {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 10px;
     display: flex;
+    justify-content: flex-end;
     cursor: pointer;
   }
 

@@ -1,8 +1,8 @@
 import * as React from "react";
 import classnames from "classnames";
-import {connect} from 'react-redux';
-import {changeFavoritesList} from '../../actions/action-creator';
-import store from '../../store';
+import { connect } from "react-redux";
+import { changeFavoritesList } from "../../actions/action-creator";
+import store from "../../store";
 
 import getWeather from "./weather.service";
 
@@ -30,9 +30,9 @@ export class WeatherWidget extends React.Component {
     }
   }
 
-  onAddToFavorites = (city) => {
+  onAddToFavorites = city => {
     store.dispatch(changeFavoritesList(city));
-  }
+  };
 
   render() {
     let { city, onDeleteWidget } = this.props;
@@ -61,6 +61,22 @@ export class WeatherWidget extends React.Component {
         className={classnames(["weather-widget", { "is-loading": isLoading }])}
         style={{ backgroundColor: tempBgc }}
       >
+        <div className="actions">
+          <div
+            className="button button--favorites"
+            onClick={() =>
+              this.onAddToFavorites({ Key: city.Key, LocalizedName: cityName })
+            }
+          >
+            ⭐️
+          </div>
+          <div
+            className="button button--delete"
+            onClick={() => onDeleteWidget(city)}
+          >
+            ✖️
+          </div>
+        </div>
         <div className="city">{cityName}</div>
         <div className="desc">
           {new Date().toDateString()}, {description}
@@ -76,29 +92,15 @@ export class WeatherWidget extends React.Component {
           </div>
           <div className="icon">{icon}</div>
         </div>
-        <div className="actions">
-          <div
-            className="button button--favorites"
-            onClick={() => this.onAddToFavorites({key: city.Key, cityName: cityName})}
-          >
-            ⭐️
-          </div>
-          <div
-            className="button button--delete"
-            onClick={() => onDeleteWidget(city)}
-          >
-            ✖️
-          </div>
-        </div>
       </div>
     );
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     favoritesList: state.favoritesList.favoritesList
-  }
+  };
 }
 
 export const ConnectedWeatherWidget = connect(mapStateToProps)(WeatherWidget);

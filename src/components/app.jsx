@@ -1,12 +1,13 @@
-import * as React from "react";
+import React, { Context, Fragment } from "react";
 import { difference } from "lodash";
+import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { connect } from "react-redux";
 
+import store from "../store";
 import Header from "./header/header";
 import { WeatherWidget } from "./weather-widget/weather-widget";
 import { ConnectedWeatherWidget } from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import store from "../store";
 
 const defaultCity = { Key: "215854", LocalizedName: "Tel Aviv" };
 
@@ -44,40 +45,42 @@ export class App extends React.Component {
     //todo: @vm: so do that shit.
 
     return (
-      <>
-        <Router>
-          <Header>
-            <Link to={"/"}>Home</Link>
-            <Link to={"/favorites"}>Favorites</Link>
-          </Header>
-          <Route exact path="/">
-            <div className="screen">
-              <div className="city-selector">
-                <CitySearch onSearch={event => this.handleCityChange(event)} />
-              </div>
-
-              <hr />
-              <div className="widgets">
-                {cities.map(city => (
-                  <WeatherWidget
-                    key={city.Key}
-                    city={city}
-                    onDeleteWidget={city => this.deleteCity(city)}
-                  />
-                ))}
-              </div>
+      <Router>
+        <Header>
+          <NavLink exact={true} activeClassName="is-active" to={"/"}>
+            Home
+          </NavLink>
+          <NavLink activeClassName="is-active" to={"/favorites"}>
+            Favorites
+          </NavLink>
+        </Header>
+        <Route exact path="/">
+          <div className="screen">
+            <div className="city-selector">
+              <CitySearch onSearch={event => this.handleCityChange(event)} />
             </div>
-          </Route>
-          <Route path="/favorites">
-            <>
-              <h1>favorites</h1>
-              {store.getState().favoritesList.favoritesList.map(city => {
-                <ConnectedWeatherWidget key={city.Key} city={city} />;
-              })}
-            </>
-          </Route>
-        </Router>
-      </>
+
+            <hr />
+            <div className="widgets">
+              {cities.map(city => (
+                <WeatherWidget
+                  key={city.Key}
+                  city={city}
+                  onDeleteWidget={city => this.deleteCity(city)}
+                />
+              ))}
+            </div>
+          </div>
+        </Route>
+        <Route path="/favorites">
+          <h1>favorites</h1>
+          <div className="widgets">
+            {store.getState().favoritesList.favoritesList.map(city => (
+              <ConnectedWeatherWidget key={city.Key} city={city} />
+            ))}
+          </div>
+        </Route>
+      </Router>
     );
   }
 }
