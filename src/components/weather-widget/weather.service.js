@@ -76,11 +76,11 @@ function weatherMapper(locationData) {
 
 //todo: @vm: no need to use class here, use just simple func instead
 export default function getWeather(locationData) {
-  const apiDomain = "http://dataservice.accuweather.com/currentconditions/v1";
+  const apiDomain = "https://dataservice.accuweather.com/currentconditions/v1";
 
   const apiEndpoint = `${apiDomain}/${locationData.Key}?apikey=${apiKey}&details=true`;
 
-  return fetch(apiEndpoint)
+  return fetch(apiEndpoint, { cache: "force-cache" })
     .then(data => data.json())
     .then(data => weatherMapper(locationData)(data))
     .catch(err => {
