@@ -1,8 +1,6 @@
 import * as React from "react";
 import classnames from "classnames";
 import { connect } from "react-redux";
-import { addToFavoritesList } from "../../actions/action-creator";
-import store from "../../store";
 
 import getWeather from "./weather.service";
 
@@ -30,12 +28,8 @@ export class WeatherWidget extends React.Component {
     }
   }
 
-  onAddToFavorites = city => {
-    store.dispatch(addToFavoritesList(city));
-  };
-
   render() {
-    let { city, onDeleteWidget } = this.props;
+    let { city, onDeleteWidget, onFavorites } = this.props;
     let { weatherData } = this.state;
 
     console.log(city);
@@ -62,14 +56,16 @@ export class WeatherWidget extends React.Component {
         style={{ backgroundColor: tempBgc }}
       >
         <div className="actions">
-          <div
-            className="button button--favorites"
-            onClick={() =>
-              this.onAddToFavorites({ Key: city.Key, LocalizedName: cityName })
-            }
-          >
-            ⭐️
-          </div>
+          {onFavorites && (
+            <div
+              className="button button--favorites"
+              onClick={() =>
+                onFavorites({ Key: city.Key, LocalizedName: cityName })
+              }
+            >
+              ⭐️
+            </div>
+          )}
           <div
             className="button button--delete"
             onClick={() => onDeleteWidget(city)}

@@ -8,7 +8,8 @@ export function WeatherWidgetList(props) {
         <WeatherWidget
           key={city.Key}
           city={city}
-          onDeleteWidget={city => this.deleteCity(city)}
+          onDeleteWidget={props.onDeleteWidget}
+          onFavorites={props.onFavorites}
         />
       ))}
     </div>

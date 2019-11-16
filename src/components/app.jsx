@@ -3,10 +3,13 @@ import { difference } from "lodash";
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 
+import {
+  addToFavoritesList,
+  removeFromFavoritesList
+} from "../actions/action-creator";
+
 import store from "../store";
 import Header from "./header/header";
-import { WeatherWidget } from "./weather-widget/weather-widget";
-import { ConnectedWeatherWidget } from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
 import { WeatherWidgetList } from "./weather-widget-list/weather-widget-list";
 
@@ -64,13 +67,18 @@ export class App extends React.Component {
               <WeatherWidgetList
                 cities={cities}
                 onDeleteWidget={city => this.deleteCity(city)}
+                onFavorites={city => store.dispatch(addToFavoritesList(city))}
               />
             </div>
           </div>
         </Route>
         <Route path="/favorites">
           <h1>favorites</h1>
-          <ConnectedWeatherWidgetList />
+          <ConnectedWeatherWidgetList
+            onDeleteWidget={city =>
+              store.dispatch(removeFromFavoritesList(city))
+            }
+          />
         </Route>
       </Router>
     );
