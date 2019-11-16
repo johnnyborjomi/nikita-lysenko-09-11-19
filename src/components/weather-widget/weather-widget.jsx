@@ -1,7 +1,7 @@
 import * as React from "react";
 import classnames from "classnames";
 import { connect } from "react-redux";
-import { changeFavoritesList } from "../../actions/action-creator";
+import { addToFavoritesList } from "../../actions/action-creator";
 import store from "../../store";
 
 import getWeather from "./weather.service";
@@ -31,7 +31,7 @@ export class WeatherWidget extends React.Component {
   }
 
   onAddToFavorites = city => {
-    store.dispatch(changeFavoritesList(city));
+    store.dispatch(addToFavoritesList(city));
   };
 
   render() {
