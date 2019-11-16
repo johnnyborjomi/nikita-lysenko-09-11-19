@@ -8,11 +8,20 @@ import Header from "./header/header";
 import { WeatherWidget } from "./weather-widget/weather-widget";
 import { ConnectedWeatherWidget } from "./weather-widget/weather-widget";
 import CitySearch from "./city-search/city-search";
+import { WeatherWidgetList } from "./weather-widget-list/weather-widget-list";
 
 const defaultCity = { Key: "215854", LocalizedName: "Tel Aviv" };
 
+function mapStateToProps(state) {
+  return {
+    cities: state.favoritesList.favoritesList
+  };
+}
+
+const ConnectedWeatherWidgetList = connect(mapStateToProps)(WeatherWidgetList);
+
 export class App extends React.Component {
-  state = { cities: [defaultCity] }; //defaultcity here
+  state = { cities: [] }; //defaultcity here
 
   constructor(props) {
     super(props);
@@ -23,7 +32,6 @@ export class App extends React.Component {
       console.log("city already added");
       return;
     }
-
     this.setState(({ cities }) => ({ cities: [...cities, newCity] }));
   }
 
@@ -32,17 +40,8 @@ export class App extends React.Component {
   }
 
   render() {
-    // let { cities, rateLimit = 0, rateLimitRemaining = 0 } = this.state;
     let { cities } = this.state;
     console.log(this.props.store.getState());
-
-    //todo: @vm: render selector and weather widget as separate components
-
-    //todo: @vm: make weather widget as component, - it should receive city, and then
-    //todo: @vm: go to service by itself and get data, and show spinner!
-    //todo: @vm: also here you should have some kind of cityList where you can
-    //todo: @vm: manage cities, i.e. add/remove city widgets, as in zadanie.
-    //todo: @vm: so do that shit.
 
     return (
       <Router>
@@ -62,23 +61,16 @@ export class App extends React.Component {
 
             <hr />
             <div className="widgets">
-              {cities.map(city => (
-                <WeatherWidget
-                  key={city.Key}
-                  city={city}
-                  onDeleteWidget={city => this.deleteCity(city)}
-                />
-              ))}
+              <WeatherWidgetList
+                cities={cities}
+                onDeleteWidget={city => this.deleteCity(city)}
+              />
             </div>
           </div>
         </Route>
         <Route path="/favorites">
           <h1>favorites</h1>
-          <div className="widgets">
-            {store.getState().favoritesList.favoritesList.map(city => (
-              <ConnectedWeatherWidget key={city.Key} city={city} />
-            ))}
-          </div>
+          <ConnectedWeatherWidgetList />
         </Route>
       </Router>
     );
