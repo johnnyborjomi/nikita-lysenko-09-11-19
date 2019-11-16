@@ -1,6 +1,7 @@
 //todo: @vm: rename it to weather.service.js, or weather.endpoint.js
 
 import { apiKey } from "../../../config.json";
+import { cachedFetch } from "../../cached-fetch.service.js";
 
 //https://emojipedia.org/nature/
 const weatherIcons = {
@@ -74,14 +75,12 @@ function weatherMapper(locationData) {
   };
 }
 
-//todo: @vm: no need to use class here, use just simple func instead
 export default function getWeather(locationData) {
   const apiDomain = "https://dataservice.accuweather.com/currentconditions/v1";
 
   const apiEndpoint = `${apiDomain}/${locationData.Key}?apikey=${apiKey}&details=true`;
 
-  return fetch(apiEndpoint, { cache: "force-cache" })
-    .then(data => data.json())
+  return cachedFetch(apiEndpoint)
     .then(data => weatherMapper(locationData)(data))
     .catch(err => {
       console.log(err);
