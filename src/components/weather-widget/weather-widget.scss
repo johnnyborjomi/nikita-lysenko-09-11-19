@@ -20,7 +20,7 @@
 
   .actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     cursor: pointer;
   }
 
@@ -69,11 +69,20 @@
   }
 
   &.is-loading {
+    background-color: #fff;
     .main {
       visibility: hidden;
       opacity: 0;
       transform: translateX(10px);
     }
+  }
+
+  &.temp-cold {
+    background-color: #d8eeff;
+  }
+
+  &.temp-hot {
+    background-color: #fff3d0;
   }
 
   .temp {

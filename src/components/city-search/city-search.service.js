@@ -1,4 +1,5 @@
 import { apiKey } from "../../../config.json";
+import { cachedFetch } from "../../cached-fetch.service.js";
 
 function cityMapper(data) {
   if (!data) return [];
@@ -12,17 +13,13 @@ export default async function getCities(query) {
   if (query.length < 1) return Promise.resolve([]);
 
   const apiDomain =
-    "http://dataservice.accuweather.com/locations/v1/cities/autocomplete";
+    "https://dataservice.accuweather.com/locations/v1/cities/autocomplete";
 
   const apiUrl = `${apiDomain}?apikey=${apiKey}&q=${query}`;
 
-  return (
-    fetch(apiUrl)
-      .then(res => res.json())
-      // .then(data => (console.log(data), data))
-      .then(cityMapper)
-      .catch(err => {
-        console.log(err);
-      })
-  );
+  return cachedFetch(apiUrl)
+    .then(cityMapper)
+    .catch(err => {
+      console.log(err);
+    });
 }
