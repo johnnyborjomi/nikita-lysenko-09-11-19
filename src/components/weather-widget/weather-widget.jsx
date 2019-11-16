@@ -54,12 +54,16 @@ export class WeatherWidget extends React.Component {
 
     temp = Math.floor(temp);
 
-    let tempBgc = isLoading ? "#fff" : temp > 0 ? "#fff3d0" : "#d8eeff";
-
     return (
       <div
-        className={classnames(["weather-widget", { "is-loading": isLoading }])}
-        style={{ backgroundColor: tempBgc }}
+        className={classnames([
+          "weather-widget",
+          {
+            "is-loading": isLoading,
+            "temp-cold": temp < 0,
+            "temp-hot": temp > 0
+          }
+        ])}
       >
         <div className="actions">
           <div
