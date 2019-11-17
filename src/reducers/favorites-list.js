@@ -8,8 +8,6 @@ const initalState = {
 };
 
 export const favoritesList = (state = initalState, action) => {
-  console.log(action);
-
   let { favoritesList } = state;
 
   switch (action.type) {

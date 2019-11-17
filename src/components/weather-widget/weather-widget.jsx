@@ -31,9 +31,6 @@ export class WeatherWidget extends React.Component {
   render() {
     let { city, onDeleteWidget, onFavorites } = this.props;
     let { weatherData } = this.state;
-
-    console.log(city);
-
     let {
       cityName,
       description = "...",

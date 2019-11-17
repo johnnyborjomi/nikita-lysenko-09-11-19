@@ -24,7 +24,7 @@ function mapStateToProps(state) {
 const ConnectedWeatherWidgetList = connect(mapStateToProps)(WeatherWidgetList);
 
 export class App extends React.Component {
-  state = { cities: [] }; //defaultcity here
+  state = { cities: [defaultCity] }; //defaultcity here
 
   constructor(props) {
     super(props);
@@ -32,7 +32,6 @@ export class App extends React.Component {
 
   handleCityChange(newCity) {
     if (this.state.cities.indexOf(newCity) >= 0) {
-      console.log("city already added");
       return;
     }
     this.setState(({ cities }) => ({ cities: [...cities, newCity] }));
@@ -44,7 +43,6 @@ export class App extends React.Component {
 
   render() {
     let { cities } = this.state;
-    console.log(this.props.store.getState());
 
     return (
       <Router>
